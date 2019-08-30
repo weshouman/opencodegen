@@ -1,0 +1,86 @@
+version: 0.1.0
+
+meta:
+  templates_dir:
+    name: templates
+  presenters_dir:
+    name: presenters
+  output_dir:
+    name: generated
+  parsers_dir:
+    name: parsers
+  functions_dir:
+    name: functions
+
+struct:
+- dir:
+    name: controller
+    file:
+      name: dst.rb
+      gen: false
+      src: src.rb
+
+- dir:
+    name: model
+    file:
+      name: dst2.rb
+      src: src2.rb
+      gen: false
+
+- dir:
+    name: view
+    rule:
+      file: ninjas_rule.py
+      lang: python
+        ver: 3
+    files:
+    - file:
+        rule:
+          file: ninjas_rule2.py
+          lang: python
+            ver: 3
+        name: dst3.rb
+        src: src3.rb
+        gen: false
+
+    - file:
+        rule: referenced_rule
+        # we need to add a variable
+        s_name: dst_relative_to_$srcfile
+        src: src4.rb.tmpl
+        gen: true
+        var:
+          # type could be custom or xml or db or db_table
+          type: custom
+          presenter: presenters/my_presenter
+          parser: parsers/my_parser
+          data: src4/*.rb.tmpl
+
+    - file:
+        rule: referenced_rule
+        # naming based on a generated name that depends on the var section
+        # this function shall be defined for, in the functions dir
+        v_name: function_to_name_dst4_based_on_var_data
+        src: src5.rb.tmpl
+        gen: true
+        var:
+          # type could be custom or db or db_table
+          type: xml
+          presenter: presenters/my_presenter2
+          parser: parsers/my_parser
+          data: src5/*
+
+rules:
+- rule:
+    name: referenced_rule
+    file: ninjas_rule3.py
+    lang: python
+      ver: 3
+
+functions:
+- function:
+    name: function_to_name_dst4_based_on_var_data
+    file: dst4_naming.py
+    lang: python
+      ver: 3
+
