@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.0.1
 
 meta:
   templates_dir:
@@ -31,13 +31,15 @@ struct:
     name: view
     rule:
       file: ninjas_rule.py
-      lang: python
+      lang:
+        name: python
         ver: 3
     files:
     - file:
         rule:
           file: ninjas_rule2.py
-          lang: python
+          lang:
+            name: python
             ver: 3
         name: dst3.rb
         src: src3.rb
@@ -74,13 +76,14 @@ rules:
 - rule:
     name: referenced_rule
     file: ninjas_rule3.py
-    lang: python
+    lang: 
+      name: python
       ver: 3
 
 functions:
 - function:
     name: function_to_name_dst4_based_on_var_data
     file: dst4_naming.py
-    lang: python
+    lang:
+      name: python
       ver: 3
-
