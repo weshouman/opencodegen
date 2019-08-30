@@ -1,2 +1,2 @@
-# opencodegen
+# OpenCodeGen
 OpenCodeGen specification allows creating machine-readible source code generators
