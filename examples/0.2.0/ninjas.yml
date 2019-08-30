@@ -1,0 +1,83 @@
+version: 0.2.0
+meta:
+  templates_dir:
+    name: templates
+  presenters_dir:
+    name: presenters
+  output_dir:
+    name: generated
+  parsers_dir:
+    name: parsers
+
+struct:
+- dir:
+    name: controller
+    file:
+      name: dst.rb
+      gen: false
+      src: src.rb
+
+- dir:
+    name: model
+    file:
+      name: dst2.rb
+      src: src2.rb
+
+- dir:
+    name: view
+    rule:
+      # a cmd will be executed and the out stream will be used as a newline or comma separated list of dir names
+      type: cmd
+      # instrumentalist file or cmd, based on the type
+      inst: "python ninjas_rule.py"
+    files:
+    - file:
+        rule:
+          type: cmd
+          inst: "python ninjas_rule2.py"
+        name: dst3.rb
+        src: src3.rb
+
+    - file:
+        uid: 1000
+        rule:
+          uid: 2000
+          inst: dst4.file.tmpl
+          # type could be cmd, custom or xml or db or db_table
+          type: custom
+          presenter: presenters/my_presenter
+          parser: parsers/my_parser
+          models: models/*
+          data: src4/*.rb.tmpl
+        # we need to add a variable
+        s_name: dst_relative_to_$srcfile
+        src: 
+          name: src4.rb.tmpl
+          # we could also use rule: 2000, which shall make it a continuation rule
+          # which spans multiple levels and enforces taking into consideration the context
+          # of the other place this rule got executed into, notice that sharing the referenced_rule doesn't imply exposing context
+          # of other capures
+          # TODO: ensure usecase is really useful
+          rule: referenced_rule
+
+    # here we'll COPY te src5 to muliplte destinations, defined by the above rule
+    - file:
+        rule:
+          # type could be custom or db or db_table
+          inst: dst5.file.tmpl
+          type: xml
+          presenter: presenters/my_presenter2
+          # parsing shall only take place if data files got invalidated
+          # otherwise cache
+          parser: parsers/my_parser
+          data: src5/*
+          # naming will be generated based on the previous rule
+        src: 
+          name: src5.rb.tmpl
+
+rules:
+- rule:
+    name: referenced_rule
+    type: cmd
+    file: "python ninjas_rule3.py"
+
